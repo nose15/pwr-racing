@@ -1,4 +1,4 @@
-add_library(utils utils.cpp)
-target_link_libraries(utils PUBLIC point)
-target_include_directories(utils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_library(utils INTERFACE)
+target_link_libraries(utils INTERFACE point)
+target_include_directories(utils INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 

@@ -32,6 +32,4 @@ std::shared_ptr<std::vector<T>> stackToVec(std::stack<T> stack) {
     return hullVec;
 }
 
-std::shared_ptr<std::vector<Point>> readPointsFromFile(const std::string& filePath);
-
 #endif //PWR_RACING_UTILS_HPP

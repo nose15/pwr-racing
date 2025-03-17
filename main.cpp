@@ -3,7 +3,7 @@
 #include <convex_hull.hpp>
 
 int main() {
-    auto points = readPointsFromFile("/home/lukasz/CLionProjects/pwr_racing/data");
+    auto points = readPointsFromFile("../data");
     auto hull = grahamScan(points);
 
     for (auto p : *hull) {

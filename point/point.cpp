@@ -2,7 +2,7 @@
 // Created by lukasz on 17.03.25.
 //
 
-#include <utils.hpp>
+#include <point.hpp>
 
 std::shared_ptr<std::vector<Point>> readPointsFromFile(const std::string& filePath) {
     std::ifstream file;
