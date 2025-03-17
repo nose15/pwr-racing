@@ -4,6 +4,7 @@
 #include <memory>
 #include <cmath>
 #include <algorithm>
+#include <stack>
 
 struct Point {
     double x;
@@ -23,9 +24,19 @@ bool compare(Point& a, Point& b) {
     return crossDiff > 0;
 }
 
-bool isCounterclockwise(Point& a, Point& b, Point& c) {
+bool isClockwise(Point& a, Point& b, Point& c) {
     double val = ((b.y - a.y) * (c.x - b.x) - (b.x - a.x) * (c.y - b.y));
-    return val <= 0;
+    return val > 0;
+}
+
+template <typename T>
+T& nextToTop(std::stack<T> stack) {
+    T top = stack.top();
+    stack.pop();
+    T& ntt = stack.top();
+
+    stack.push(top);
+    return ntt;
 }
 
 std::shared_ptr<std::vector<Point>> grahamScan(std::shared_ptr<std::vector<Point>> points) {
@@ -42,36 +53,28 @@ std::shared_ptr<std::vector<Point>> grahamScan(std::shared_ptr<std::vector<Point
 
     // sort remaining points by polar angle between them and points[0]
     std::sort(points->begin() + 1, points->end(), compare);
+    std::stack<Point> hull;
 
-    auto hull = std::make_shared<std::vector<Point>>();
-
-    // points[0] and points[1] are on the hull
-    hull->push_back(points->at(0));
-    hull->push_back(points->at(1));
-
-    // iterate through points from index 2 to n - 1 and keep curr, prev and next
-    // since we're iterating in a counterclockwise orientation, we're looking for
-    // counterclockwise point triplets. If 3 points are not counterclockwise, we
-    // discard the current point from the hull and go further so:
-    Point prev = points->at(1);
-    Point curr, next;
+    hull.push(points->at(0));
+    hull.push(points->at(1));
 
     for (int i = 2; i < points->size(); i++) {
-        curr = points->at(i);
+        Point p = points->at(i);
 
-        if (i + 1 > points->size() - 1) {
-            next = points->at((0));
-        } else {
-            next = points->at((i + 1));
+        while (hull.size() > 1 && isClockwise(nextToTop(hull), hull.top(), p)) {
+            hull.pop();
         }
 
-        if (isCounterclockwise(prev, curr, next)) {
-            hull->push_back(curr);
-            prev = curr;
-        }
+        hull.push(p);
     }
 
-    return hull;
+    auto hullVec = std::make_shared<std::vector<Point>>();
+    while (!hull.empty()) {
+        hullVec->push_back(hull.top());
+        hull.pop();
+    }
+
+    return hullVec;
 }
 
 std::shared_ptr<std::vector<Point>> readPoints(const std::string& filePath) {
